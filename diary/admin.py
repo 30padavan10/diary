@@ -16,9 +16,16 @@ class StudentAdmin(admin.ModelAdmin):
 admin.site.register(School)
 admin.site.register(SchoolClass)
 
+
 @admin.register(Grade)
 class GradeAdmin(admin.ModelAdmin):
     list_display = ('lesson', 'student', 'grade')
+
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(GradeAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['student'].queryset = Student.objects.filter(school_class='1')
+        return form
 
 #admin.site.register(Grade)
 admin.site.register(Subject)
