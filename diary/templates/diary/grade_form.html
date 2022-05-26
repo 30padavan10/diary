@@ -1,5 +1,5 @@
   <h2>Person Form</h2>
-  <form method="post" novalidate>
+  <form method="post" id="gradeForm" data-students-url="{% url 'ajax_load_students' %}" novalidate>
     {% csrf_token %}
     <table>
       {{ form.as_table }}
@@ -7,3 +7,21 @@
     <button type="submit">Save</button>
     <a href="{% url 'grade_list' %}">Nevermind</a>
   </form>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_lesson").change(function () {
+    var url = $("#gradeForm").attr("data-students-url");
+    var lessonId = $(this).val();
+
+    $.ajax({
+    url: url,
+    data: {
+    'lesson': lessonId
+    },
+    success: function (data) {
+    $("#id_student").html(data);
+    }
+    });
+    });
+  </script>
