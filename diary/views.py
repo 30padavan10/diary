@@ -30,3 +30,22 @@ def load_students(request):
     students = Student.objects.filter(school_class__class_number=lesson.school_class,
                                       school_class__school_number=lesson.school)
     return render(request, 'diary/dropdownlist.html', {'students': students})
+
+
+from django.http import JsonResponse
+
+
+
+def filter_students_by_lesson(request):
+    lesson_id = request.GET.get('lesson')
+    print('!!')
+    print(request.GET)
+
+
+    lesson = Lesson.objects.get(pk=lesson_id)
+    students = Student.objects.filter(school_class__class_number=lesson.school_class,
+                                      school_class__school_number=lesson.school)
+    print('!!!!')
+    print(students)
+    #return JsonResponse({x.id: str(x) for x in students})
+    return render(request, 'diary/dropdownlist.html', {'students': students})
