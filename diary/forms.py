@@ -10,6 +10,8 @@ class GradeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """в данном методе переопределяем стандартый queryset(objects.all) на пустой"""
         super().__init__(*args, **kwargs)
+        print('!!!!')
+        print(self.fields['student'].queryset)
         self.fields['student'].queryset = Student.objects.none()
 
         if 'lesson' in self.data:

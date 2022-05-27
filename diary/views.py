@@ -25,6 +25,7 @@ class GradeUpdateView(UpdateView):
 
 
 def load_students(request):
+    """Для данного метода cкрипт создающий ajax запрос находится в grade_form.html"""
     lesson_id = request.GET.get('lesson')
     lesson = Lesson.objects.get(pk=lesson_id)
     students = Student.objects.filter(school_class__class_number=lesson.school_class,
@@ -32,11 +33,21 @@ def load_students(request):
     return render(request, 'diary/dropdownlist.html', {'students': students})
 
 
-from django.http import JsonResponse
-
 
 
 def filter_students_by_lesson(request):
+    """Данный метод дублирует метод load_students, нужен для описания процесса добавления фильтра в админку
+    1. Находим шаблон change_form.html в файлах админки джанго, он находится по пути
+    venv/Lib/site-packages/django/contrib/admin/templates/admin/change_form.html
+    2. Копируем по пути templates/admin/diary/grade/change_form.html папка templates должна быть добавлена
+    в settings TEMPLATES DIRS os.path.join(BASE_DIR, 'templates')
+    3. Добавляем скрипт, который будет отвечать за обновление селекта select_students.js по пути
+    static/admin/js/admin/select_students.js
+    4. В шаблон change_form.html добавляем <script src="{% static 'admin/js/admin/select_students.js' %}"></script>
+    5. В urls добавляем путь на данный view.
+    Скрипт select_students.js при изменении значения в поле Урок отправляет ajax запрос на бекенд на данный view
+    со значением id урока. Данный view на основе id урока формирует queryset учеников и рендерит его с помощью
+    шаблона diary/dropdownlist.html  dropdownlist для поля ученик отображает переданный список учеников"""
     lesson_id = request.GET.get('lesson')
     print('!!')
     print(request.GET)
