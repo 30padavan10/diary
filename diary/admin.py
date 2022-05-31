@@ -3,18 +3,30 @@ from django.contrib import admin
 # Register your models here.
 from .models import Teacher, Student, School, SchoolClass, Grade, Subject, Lesson
 
+
+class AllFieldModelAdminMixin(object):
+    """Класс добавляющий все поля модели в list_display кроме id """
+    def __init__(self, model, admin_site):
+        self.list_display = [field.name for field in model._meta.fields if field.name != "id"]
+        super(AllFieldModelAdminMixin, self).__init__(model, admin_site)
+
+
 admin.site.register(Teacher)
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('fio', 'school_class')
+    list_display = ('fio', 'school_number', 'school_class')
 
 #admin.site.register(Student)
 
 
 
 admin.site.register(School)
-admin.site.register(SchoolClass)
+
+@admin.register(SchoolClass)
+class SchoolClassAdmin(AllFieldModelAdminMixin, admin.ModelAdmin):
+    pass
+#admin.site.register(SchoolClass)
 
 
 @admin.register(Grade)

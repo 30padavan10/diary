@@ -29,7 +29,7 @@ def load_students(request):
     lesson_id = request.GET.get('lesson')
     lesson = Lesson.objects.get(pk=lesson_id)
     students = Student.objects.filter(school_class__class_number=lesson.school_class,
-                                      school_class__school_number=lesson.school)
+                                      school_number__school_number=lesson.school.school_number)
     return render(request, 'diary/dropdownlist.html', {'students': students})
 
 
@@ -54,8 +54,16 @@ def filter_students_by_lesson(request):
 
 
     lesson = Lesson.objects.get(pk=lesson_id)
+    print('!!')
+    print(type(lesson.school_class))
+    print(type(lesson.school))
     students = Student.objects.filter(school_class__class_number=lesson.school_class,
-                                      school_class__school_number=lesson.school)
+                                      school_number__school_number=lesson.school.school_number)
+    # в lesson.school_class и lesson.school хранятся экземпляры классов SchoolClass и School
+    # когда фильтруем учеников, то для соответствия полю school_number нужно обращаться к lesson.school.school_number
+    # а для class_number не обязательно писать lesson.school_class.class_number достаточно только lesson.school_class
+    # однозначного ответа нет но разница есть в том что school_class - поле типа CharField, а school_number - поле типа
+    # IntegerField
     print('!!!!')
     print(students)
     #return JsonResponse({x.id: str(x) for x in students})
