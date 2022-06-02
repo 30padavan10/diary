@@ -1,4 +1,4 @@
-from .models import Student, Lesson, Grade
+from .models import Student, Lesson, Grade, CustomUser
 from django import forms
 
 
@@ -23,3 +23,45 @@ class GradeForm(forms.ModelForm):
                 pass
         elif self.instance.pk:
             self.fields['student'].queryset = self.instance.lesson.school_class.student_set.order_by('fio')
+
+
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import Teacher, Student
+
+class TeacherCreationForm(UserCreationForm):
+
+    class Meta:
+        model = Teacher
+        fields = ('username', 'password', 'first_name', 'last_name', 'fio')
+
+class TeacherChangeForm(UserChangeForm):
+
+    class Meta:
+        model = Teacher
+        fields = ('username', 'password', 'first_name', 'last_name', 'fio')
+
+
+class StudentCreationForm(UserCreationForm):
+
+    class Meta:
+        model = Student
+        fields = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+
+class StudentChangeForm(UserChangeForm):
+
+    class Meta:
+        model = Student
+        fields = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+
+
+class CustomUserCreationForm(UserCreationForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+
+class CustomUserChangeForm(UserChangeForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')

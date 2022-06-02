@@ -3,6 +3,35 @@ from django.contrib import admin
 # Register your models here.
 from .models import Teacher, Student, School, SchoolClass, Grade, Subject, Lesson
 
+from django.contrib.auth.admin import UserAdmin
+from .forms import StudentCreationForm, StudentChangeForm, CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
+
+
+# class TeacherAdmin(UserAdmin):
+#     add_form = TeacherCreationForm
+#     form = TeacherChangeForm
+#     model = Teacher
+#     list_display = ['username', 'password', 'first_name', 'last_name', 'fio']
+
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+
+
+
+class StudentAdmin(UserAdmin):
+    add_form = StudentCreationForm
+    form = StudentChangeForm
+    model = Student
+    list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+
+
+
+
+
 
 class AllFieldModelAdminMixin(object):
     """Класс добавляющий все поля модели в list_display кроме id """
@@ -10,12 +39,14 @@ class AllFieldModelAdminMixin(object):
         self.list_display = [field.name for field in model._meta.fields if field.name != "id"]
         super(AllFieldModelAdminMixin, self).__init__(model, admin_site)
 
+admin.site.register(CustomUser, CustomUserAdmin)
+#admin.site.register(Student, StudentAdmin)
+# admin.site.register(Student)
+# # admin.site.register(Teacher)
 
-admin.site.register(Teacher)
-
-@admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
-    list_display = ('fio', 'school_number', 'school_class')
+# @admin.register(Student)
+# class StudentAdmin(admin.ModelAdmin):
+#     list_display = ('fio', 'school_number', 'school_class')
 
 #admin.site.register(Student)
 

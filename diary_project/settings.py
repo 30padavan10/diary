@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'diary',
         'USER': 'postgres',
-        'PASSWORD': '123456',#'qaz',
+        'PASSWORD': 'qaz',#'123456',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -140,3 +140,5 @@ STATICFILES_DIRS = [STATIC_DIR]
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'diary.CustomUser'
