@@ -1,10 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Teacher, Student, School, SchoolClass, Grade, Subject, Lesson
+from .models import School, SchoolClass, Grade, Subject, Lesson # Teacher, Student,
 
 from django.contrib.auth.admin import UserAdmin
-from .forms import StudentCreationForm, StudentChangeForm, CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm # StudentCreationForm, StudentChangeForm,
 from .models import CustomUser
 
 
@@ -18,15 +18,44 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (("Personal info"), {"fields": ("first_name", "last_name", "second_name", "email")}),
+        (
+            (("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        )),
+        (("Important dates"), {"fields": ("last_login", "date_joined")}),
+        (("Permissions"), {"fields": ("school_number", "school_class")}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "password1", "password2"),
+            },
+        ),
+    )
+    #list_display = ['email', 'username', ]
+    #list_display = ('username', 'email', 'first_name', 'last_name', 'second_name', 'school_number', 'school_class')
+    #list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
 
 
 
-class StudentAdmin(UserAdmin):
-    add_form = StudentCreationForm
-    form = StudentChangeForm
-    model = Student
-    list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+# class StudentAdmin(UserAdmin):
+#     add_form = StudentCreationForm
+#     form = StudentChangeForm
+#     model = Student
+#     list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
 
 
 

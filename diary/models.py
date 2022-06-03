@@ -5,12 +5,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
-    fio = models.CharField(max_length=100, blank=True)
+    second_name = models.CharField("Отчество", max_length=100, blank=True)
     school_number = models.ForeignKey('School', on_delete=models.CASCADE, verbose_name='Номер школы', default=1)
-    school_class = models.ForeignKey('SchoolClass', on_delete=models.CASCADE, verbose_name='Номер класса')
+    school_class = models.ForeignKey('SchoolClass', on_delete=models.CASCADE, verbose_name='Номер класса', default=1)
 
     def __str__(self):
-        return self.fio
+        return self.second_name
 
     class Meta:
         verbose_name = 'Ученик'
@@ -25,15 +25,15 @@ class CustomUser(AbstractUser):
 
 
 
-class Teacher(CustomUser):
-    """Преподаватель"""
-
-    def __str__(self):
-        return self.fio
-
-    class Meta:
-        verbose_name = 'Преподаватель'
-        verbose_name_plural = 'Преподаватели'
+# class Teacher(CustomUser):
+#     """Преподаватель"""
+#
+#     def __str__(self):
+#         return self.fio
+#
+#     class Meta:
+#         verbose_name = 'Преподаватель'
+#         verbose_name_plural = 'Преподаватели'
 
 
 class Student(CustomUser):
@@ -94,7 +94,7 @@ class Subject(models.Model):
 
 class Lesson(models.Model):
     """Урок"""
-    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
+    teacher = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
