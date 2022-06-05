@@ -10,6 +10,12 @@ class GradeListView(ListView):
     model = Grade
     context_object_name = 'grades'
 
+    def get(self, request, *args, **kwargs):
+        print('////')
+        print(request.user.__dict__)
+        return super().get(self, request, *args, **kwargs)
+
+
 
 class GradeCreateView(CreateView):
     model = Grade
@@ -68,3 +74,41 @@ def filter_students_by_lesson(request):
     print(students)
     #return JsonResponse({x.id: str(x) for x in students})
     return render(request, 'diary/dropdownlist.html', {'students': students})
+
+
+from django.contrib.auth import login
+from django.shortcuts import redirect
+from django.views.generic import CreateView
+
+from .forms import StudentSignUpForm, TeacherSignUpForm
+from .models import CustomUser
+
+
+class StudentSignUpView(CreateView):
+    model = CustomUser
+    form_class = StudentSignUpForm
+    template_name = 'registration/signup_form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'student'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('grade_list')
+
+
+class TeacherSignUpView(CreateView):
+    model = CustomUser
+    form_class = TeacherSignUpForm
+    template_name = 'registration/signup_form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'teacher'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('grade_list')

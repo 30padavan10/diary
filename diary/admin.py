@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import School, SchoolClass, Grade, Subject, Lesson # Teacher, Student,
+from .models import School, SchoolClass, Grade, Subject, Lesson, Student #Teacher
 
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm # StudentCreationForm, StudentChangeForm,
@@ -9,15 +9,45 @@ from .models import CustomUser
 
 
 # class TeacherAdmin(UserAdmin):
-#     add_form = TeacherCreationForm
-#     form = TeacherChangeForm
-#     model = Teacher
-#     list_display = ['username', 'password', 'first_name', 'last_name', 'fio']
+# #     add_form = TeacherCreationForm
+# #     form = TeacherChangeForm
+# #     model = Teacher
+# #     list_display = ['username', 'password', 'first_name', 'last_name', 'fio']
+#     fieldsets = (
+#         (None, {"fields": ("username", "password")}),
+#         (("Personal info"), {"fields": ("first_name", "last_name", "second_name", "email")}),
+#         (
+#             (("Permissions"),
+#             {
+#                 "fields": (
+#                     "is_active",
+#                     "is_staff",
+#                     "is_superuser",
+#                     "groups",
+#                     "user_permissions",
+#                 ),
+#             },
+#         )),
+#         (("Important dates"), {"fields": ("last_login", "date_joined")}),
+#         #(("School"), {"fields": ("school_number", "school_class")}),
+#     )
+#     add_fieldsets = (
+#         (
+#             None,
+#             {
+#                 "classes": ("wide",),
+#                 "fields": ("username", "password1", "password2", "second_name"),
+#             },
+#         ),
+#         #(("School"), {"fields": ("school_number", "school_class")}),
+#     )
+#
+# admin.site.register(Teacher, TeacherAdmin)
 
 class CustomUserAdmin(UserAdmin):
-    add_form = CustomUserCreationForm
-    form = CustomUserChangeForm
-    model = CustomUser
+    # add_form = CustomUserCreationForm
+    # form = CustomUserChangeForm
+    # model = CustomUser
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (("Personal info"), {"fields": ("first_name", "last_name", "second_name", "email")}),
@@ -26,6 +56,8 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     "is_active",
+                    "is_student",
+                    "is_teacher",
                     "is_staff",
                     "is_superuser",
                     "groups",
@@ -34,16 +66,17 @@ class CustomUserAdmin(UserAdmin):
             },
         )),
         (("Important dates"), {"fields": ("last_login", "date_joined")}),
-        (("Permissions"), {"fields": ("school_number", "school_class")}),
+        #(("School"), {"fields": ("school_number", "school_class")}),
     )
     add_fieldsets = (
         (
             None,
             {
                 "classes": ("wide",),
-                "fields": ("username", "password1", "password2"),
+                "fields": ("username", "password1", "password2", "second_name"),
             },
         ),
+        #(("School"), {"fields": ("school_number", "school_class")}),
     )
     #list_display = ['email', 'username', ]
     #list_display = ('username', 'email', 'first_name', 'last_name', 'second_name', 'school_number', 'school_class')
@@ -52,12 +85,40 @@ class CustomUserAdmin(UserAdmin):
 
 
 # class StudentAdmin(UserAdmin):
-#     add_form = StudentCreationForm
-#     form = StudentChangeForm
-#     model = Student
-#     list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
-
-
+#     # add_form = StudentCreationForm
+#     # form = StudentChangeForm
+#     # model = Student
+#     # list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
+#     fieldsets = (
+#         (None, {"fields": ("username", "password")}),
+#         (("Personal info"), {"fields": ("first_name", "last_name", "second_name", "email")}),
+#         (
+#             (("Permissions"),
+#              {
+#                  "fields": (
+#                      "is_active",
+#                      "is_staff",
+#                      "is_superuser",
+#                      "groups",
+#                      "user_permissions",
+#                  ),
+#              },
+#              )),
+#         (("Important dates"), {"fields": ("last_login", "date_joined")}),
+#         # (("School"), {"fields": ("school_number", "school_class")}),
+#     )
+#     add_fieldsets = (
+#         (
+#             None,
+#             {
+#                 "classes": ("wide",),
+#                 "fields": ("username", "password1", "password2", "second_name"),
+#             },
+#         ),
+#         # (("School"), {"fields": ("school_number", "school_class")}),
+#     )
+#
+# admin.site.register(Student, StudentAdmin)
 
 
 
