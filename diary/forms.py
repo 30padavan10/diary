@@ -83,14 +83,28 @@ class StudentSignUpForm(UserCreationForm):
     #     widget=forms.CheckboxSelectMultiple,
     #     required=True
     # )
+
+    # Переопределяю passwords для того чтобы убрать help_text
+    password1 = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+    )
+    password2 = forms.CharField(
+        label="Password confirmation",
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        strip=False,
+    )
+
+    # Создаем дополнительные поля в форму
     school_number = forms.ModelChoiceField(queryset=School.objects.all(), widget=forms.Select(), empty_label=None)
     school_class = forms.ModelChoiceField(queryset=SchoolClass.objects.all(), widget=forms.Select(), empty_label=None)
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'password1', 'password2', 'first_name', 'second_name', 'last_name')
+        fields = ('username', 'password1', 'password2', 'last_name', 'first_name', 'second_name')
 
-    @transaction.atomic  # позволяет выполнять в одну транзакцию к БД
+    @transaction.atomic  # позволяет выполнять в одну транзакцию к БД сохранение user и student
     def save(self):
         print('!!!')
         user = super().save(commit=False)
@@ -106,6 +120,7 @@ class StudentSignUpForm(UserCreationForm):
 class TeacherSignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
+        fields = ('username', 'password1', 'password2', 'last_name', 'first_name', 'second_name')
 
     def save(self, commit=True):
         user = super().save(commit=False)
