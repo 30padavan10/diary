@@ -44,6 +44,12 @@ from .models import CustomUser
 #
 # admin.site.register(Teacher, TeacherAdmin)
 
+class SchoolInline(admin.TabularInline):  # TabularInline - суть таже, оформление другое
+    model = Student
+    extra = 1
+    #readonly_fields = ("school_number", "school_class")
+
+
 class CustomUserAdmin(UserAdmin):
     # add_form = CustomUserCreationForm
     # form = CustomUserChangeForm
@@ -73,11 +79,28 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("username", "password1", "password2", "second_name"),
+                "fields": ("username", "password1", "password2", "is_student", "is_teacher"),
             },
         ),
         #(("School"), {"fields": ("school_number", "school_class")}),
     )
+
+    # def get_inline_instances(self, request, obj=None):
+    #     return super().get_inline_instances(request)
+
+    def get_inlines(self, request, obj):
+        """Hook for specifying custom inlines.
+        request.user - тот юзер который в админке
+        obj - экземпляр студента который создается/редактируется
+        """
+        print('obj')
+        print(obj)
+        if obj and obj.is_student:
+            if not self.inlines:
+                self.inlines.append(SchoolInline)
+        return self.inlines
+
+    #inlines = [SchoolInline]
     #list_display = ['email', 'username', ]
     #list_display = ('username', 'email', 'first_name', 'last_name', 'second_name', 'school_number', 'school_class')
     #list_display = ('username', 'password', 'first_name', 'last_name', 'fio', 'school_number', 'school_class')
@@ -134,9 +157,9 @@ admin.site.register(CustomUser, CustomUserAdmin)
 # admin.site.register(Student)
 # # admin.site.register(Teacher)
 
-# @admin.register(Student)
-# class StudentAdmin(admin.ModelAdmin):
-#     list_display = ('fio', 'school_number', 'school_class')
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'school_number', 'school_class')
 
 #admin.site.register(Student)
 
