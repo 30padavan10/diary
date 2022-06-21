@@ -128,3 +128,13 @@ class TeacherSignUpForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+from .models import Contact
+
+
+class ContactForm(forms.ModelForm):
+    """Форма подписки на емейл"""
+    class Meta:
+        model = Contact
+        fields = "__all__"

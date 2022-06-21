@@ -1,0 +1,8 @@
+  <h2>Contact Form</h2>
+  <form method="post" action="{% url 'contact' %}">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <button type="submit">Отправить</button>
+  </form>

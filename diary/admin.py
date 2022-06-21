@@ -198,3 +198,10 @@ class LessonAdmin(admin.ModelAdmin):
     list_display = ('lesson_date', 'teacher', 'school', 'school_class', 'subject')
 
 #admin.site.register(Lesson)
+
+
+from .models import Contact
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ("name", "email")

@@ -146,3 +146,53 @@ STATICFILES_DIRS = [STATIC_DIR]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'diary.CustomUser'
+
+
+# pip install python-dotenv,
+
+from dotenv import load_dotenv
+dotenv_path = os.path.join(BASE_DIR, '.env')
+load_dotenv(dotenv_path)
+
+# отправка email
+
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv('NAME')
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD')
+
+
+# настройки для redis и celery
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = '6379'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  #"redis://" + REDIS_HOST + ":" + REDIS_PORT # + "/0"
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # "redis://" + REDIS_HOST + ":" + REDIS_PORT # + "/0"
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

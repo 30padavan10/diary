@@ -145,3 +145,12 @@ class Grade(models.Model):
     class Meta:
         verbose_name = 'Оценка'
         verbose_name_plural = 'Оценки'
+
+
+class Contact(models.Model):
+    name = models.CharField("Имя", max_length=100)
+    email = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
