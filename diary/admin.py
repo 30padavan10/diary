@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
-from .models import School, SchoolClass, Grade, Subject, Lesson, Student #Teacher
+from .models import School, SchoolClass, Grade, Subject, Lesson, Student, Teacher
 
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm # StudentCreationForm, StudentChangeForm,
@@ -44,6 +43,13 @@ from .models import CustomUser
 #
 # admin.site.register(Teacher, TeacherAdmin)
 
+
+
+class TeacherInline(admin.StackedInline):
+    model = Teacher
+    #extra = 1
+
+
 class SchoolInline(admin.TabularInline):  # TabularInline - суть таже, оформление другое
     model = Student
     extra = 1
@@ -51,8 +57,8 @@ class SchoolInline(admin.TabularInline):  # TabularInline - суть таже, �
 
 
 class CustomUserAdmin(UserAdmin):
-    # add_form = CustomUserCreationForm
-    # form = CustomUserChangeForm
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
     # model = CustomUser
     fieldsets = (
         (None, {"fields": ("username", "password")}),
@@ -95,10 +101,26 @@ class CustomUserAdmin(UserAdmin):
         """
         print('obj')
         print(obj)
+        self.inlines = []
         if obj and obj.is_student:
-            if not self.inlines:
-                self.inlines.append(SchoolInline)
+            #if not self.inlines:
+            self.inlines.append(SchoolInline)
+        elif obj and obj.is_teacher:
+            #if not self.inlines:
+            self.inlines.append(TeacherInline)
+        print('self.inlines')
+        print(self.inlines)
         return self.inlines
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Use special form during user creation
+        """
+        defaults = {}
+        if obj is None:
+            defaults["form"] = self.add_form
+        defaults.update(kwargs)
+        return super().get_form(request, obj, **defaults)
 
     #inlines = [SchoolInline]
     #list_display = ['email', 'username', ]
@@ -157,13 +179,16 @@ admin.site.register(CustomUser, CustomUserAdmin)
 # admin.site.register(Student)
 # # admin.site.register(Teacher)
 
+
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('user', 'school_number', 'school_class')
 
 #admin.site.register(Student)
 
-
+@admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = ('user',)
 
 admin.site.register(School)
 

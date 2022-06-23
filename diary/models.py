@@ -57,24 +57,31 @@ class CustomUser(AbstractUser):
     is_teacher = models.BooleanField(default=False)
     second_name = models.CharField("Отчество", max_length=100, blank=True)
 
+
 class Student(models.Model):
     """Ученик"""
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     school_number = models.ForeignKey('School', on_delete=models.CASCADE, verbose_name='Номер школы')
     school_class = models.ForeignKey('SchoolClass', on_delete=models.CASCADE, verbose_name='Номер класса')
 
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name} {self.user.second_name}'
+
     class Meta:
         verbose_name = 'Ученик'
         verbose_name_plural = 'Ученики'
 
 
-# class Teacher(models.Model):
-#     """Преподаватель"""
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
-#
-#     class Meta:
-#             verbose_name = 'Преподаватель'
-#             verbose_name_plural = 'Преподаватели'
+class Teacher(models.Model):
+    """Преподаватель"""
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name} {self.user.second_name}'
+
+    class Meta:
+            verbose_name = 'Преподаватель'
+            verbose_name_plural = 'Преподаватели'
 
 
 class School(models.Model):
@@ -119,7 +126,8 @@ class Subject(models.Model):
 
 class Lesson(models.Model):
     """Урок"""
-    teacher = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    #teacher = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -136,7 +144,8 @@ class Lesson(models.Model):
 class Grade(models.Model):
     """Оценка"""
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    #student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     grade = models.PositiveSmallIntegerField()
 
     def __str__(self):

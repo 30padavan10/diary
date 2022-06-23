@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',    # приложение отвечающее за стандартную аутентификацию, можно добавить только html форму,
     # подключить это приложение в урлах и использовать стандартные урлы, можно посмотреть в django.contrib.auth.urls
@@ -39,9 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'diary'
+    'diary',
+
 ]
 
+AUTH_USER_MODEL = 'diary.CustomUser'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -92,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'diary',
         'USER': 'postgres',
-        'PASSWORD': '123456',#'qaz',
+        'PASSWORD': 'qaz',#'123456',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -145,7 +148,7 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'diary.CustomUser'
+
 
 
 # pip install python-dotenv,

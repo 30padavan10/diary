@@ -1,4 +1,4 @@
-from .models import Student, Lesson, Grade, CustomUser
+from .models import Student, Lesson, Grade, CustomUser, Teacher
 from django import forms
 
 from django.contrib.auth.models import User
@@ -122,13 +122,26 @@ class TeacherSignUpForm(UserCreationForm):
         model = CustomUser
         fields = ('username', 'password1', 'password2', 'last_name', 'first_name', 'second_name')
 
-    def save(self, commit=True):
+    # Вариант когда нет отдельного класса Teacher и сохраняем только пользователя
+    # def save(self, commit=True):
+    #     user = super().save(commit=False)
+    #     user.is_teacher = True
+    #     if commit:
+    #         user.save()
+    #     return user
+
+    # Вариант когда есть отдельный класс Teacher, т.к. без него при выборке учителя для урока в админке выводятся
+    # все пользователи, наверно можно переопределять выборку, но решил сделать отдельную модель, что по количеству
+    # запросов - пока не проверял
+    # данный способ сохранения в две модели делается только во вью где данная форма применяется, в админке чтобы такое
+    # провернуть надо гуглить
+    @transaction.atomic  # позволяет выполнять в одну транзакцию к БД сохранение user и Teacher
+    def save(self):
         user = super().save(commit=False)
         user.is_teacher = True
-        if commit:
-            user.save()
+        user.save()
+        Teacher.objects.create(user=user)
         return user
-
 
 from .models import Contact
 
