@@ -82,24 +82,24 @@ WSGI_APPLICATION = 'diary_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'diary',
-        'USER': 'postgres',
-        'PASSWORD': 'qaz',#'123456',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'diary',
+#         'USER': 'postgres',
+#         'PASSWORD': '123456', #'qaz',
+#         'HOST': '0.0.0.0',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -170,12 +170,17 @@ EMAIL_HOST_PASSWORD = os.getenv('PASSWORD')
 # настройки для redis и celery
 # REDIS_HOST = 'localhost'
 # REDIS_PORT = '6379'
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  #"redis://" + REDIS_HOST + ":" + REDIS_PORT # + "/0"
-CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # "redis://" + REDIS_HOST + ":" + REDIS_PORT # + "/0"
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+#CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'  #"redis://" + REDIS_HOST + ":" + REDIS_PORT # + "/0"  для винды
+CELERY_BROKER_URL = 'redis://diary_app_redis:6379'
+'diary_app_redis'
+# CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+#CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'  # "redis://" + REDIS_HOST + ":" + REDIS_PORT # + "/0" для винды
+CELERY_RESULT_BACKEND = 'redis://diary_app_redis:6379'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+
+# celery --workdir=./ -A diary_project worker --loglevel=info # запускается из папки diary
 
 
 

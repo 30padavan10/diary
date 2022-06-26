@@ -117,7 +117,7 @@ class TeacherSignUpView(CreateView):
 from .models import Contact
 from .forms import ContactForm
 from .service import send
-# from .tasks import send_spam_email
+from .tasks import send_spam_email
 
 class ContactView(CreateView):
     model = Contact
@@ -128,7 +128,8 @@ class ContactView(CreateView):
     def form_valid(self, form):
         form.save()
         # send(form.instance.email)  # данная функция отправляет письмо
-        # send_spam_email.delay(form.instance.email) # если запустить саму функцию send_spam_email, то она будет
+        print(form.instance.email)
+        send_spam_email.delay(form.instance.email) # если запустить саму функцию send_spam_email, то она будет
         # выполняться как обычная функция и будет ждать ответа, а вот метод delay как раз говорит о том что это таска
         # и не нужно ждать ответа, а двигаться дальше
         return super().form_valid(form)
