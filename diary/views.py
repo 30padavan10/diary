@@ -2,8 +2,11 @@ from django.shortcuts import render
 
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
-from .models import Grade, Student, Lesson, School, SchoolClass
+from rest_framework import generics
+
+from .models import Grade, Student, Lesson, School, SchoolClass, Teacher
 from .forms import GradeForm
+from .serializers import StudentListSerializer, LessonListSerializer, LessonDetailSerializer, TeacherDetailSerializer
 
 
 class GradeListView(ListView):
@@ -133,3 +136,28 @@ class ContactView(CreateView):
         # выполняться как обычная функция и будет ждать ответа, а вот метод delay как раз говорит о том что это таска
         # и не нужно ждать ответа, а двигаться дальше
         return super().form_valid(form)
+
+
+
+class StudentListView(generics.ListAPIView):
+    """Вывод списка студентов с помощью generics класса"""
+    serializer_class = StudentListSerializer
+    queryset = Student.objects.all()
+
+
+class LessonListView(generics.ListAPIView):
+    """Вывод списка уроков с помощью generics класса"""
+    queryset = Lesson.objects.all()
+    serializer_class = LessonListSerializer
+
+
+class LessonDetailView(generics.RetrieveAPIView):
+    """Вывод данных об уроке с помощью generics класса"""
+    queryset = Lesson.objects.all()
+    serializer_class = LessonDetailSerializer
+
+
+class TeacherDetailView(generics.RetrieveAPIView):
+    """Вывод данных об уроке с помощью generics класса"""
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherDetailSerializer

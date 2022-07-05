@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'diary',
 
 ]
@@ -82,24 +83,24 @@ WSGI_APPLICATION = 'diary_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'diary',
-#         'USER': 'postgres',
-#         'PASSWORD': '123456', #'qaz',
-#         'HOST': '0.0.0.0',
-#         'PORT': '5432',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'diary',
+        'USER': 'postgres',
+        'PASSWORD': 'qaz',#'123456',
+        'HOST': 'localhost',#'0.0.0.0',
+        'PORT': '5432',
+    }
+}
 
 
 # Password validation
@@ -131,6 +132,10 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+REST_FRAMEWORK = {
+    #'DATETIME_FORMAT': "%d-%m-%Y %H:%M",    можно задать общий формат времени для всех полей DateTimeField
+}
 
 
 # Static files (CSS, JavaScript, Images)
