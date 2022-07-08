@@ -14,6 +14,19 @@ class StudentListSerializer(serializers.ModelSerializer):
 
 
 
+# class StuSerializer(serializers.ModelSerializer):
+#     fi = TrackListingField(many=True)
+#
+#     class Meta:
+#         model = Teacher
+#         fields = ['user', 'fi']
+
+
+class FioField(serializers.RelatedField):
+    def to_representation(self, value):
+        return '%s %s' % (value.last_name, value.first_name)
+
+
 class FioSerializer(serializers.ModelSerializer):
     """Вывод ФИО"""
     #category = serializers.SlugRelatedField(slug_field="name", read_only=True)
@@ -22,25 +35,30 @@ class FioSerializer(serializers.ModelSerializer):
         fields = ("last_name",) # "first_name", "second_name")
 
 
-class TeacherDetailSerializer(serializers.HyperlinkedModelSerializer):
+# class TeacherDetailSerializer(serializers.HyperlinkedModelSerializer):
+#     """Вывод ФИО"""
+#     #user = serializers.SlugRelatedField(slug_field="first_name", read_only=True) # вместо поля user можно подставлять
+#     # любое поле из связанной модели, но если мне нужны 3 поля для ФИО, то это не подойдет
+#
+#     last_name = ReadOnlyField(source="user.last_name")
+#     first_name = ReadOnlyField(source="user.first_name")
+#     second_name = ReadOnlyField(source="user.second_name")
+#     #
+#     #
+#     class Meta:
+#         model = Teacher
+#         fields = ("last_name", "first_name", "second_name")
+
+
+
+class TeacherDetailSerializer(serializers.BaseSerializer):
     """Вывод ФИО"""
-    #user = serializers.SlugRelatedField(slug_field="first_name", read_only=True) # вместо поля user можно подставлять
-    # любое поле из связанной модели, но если мне нужны 3 поля для ФИО, то это не подойдет
 
-    last_name = ReadOnlyField(source="user.last_name")
-    first_name = ReadOnlyField(source="user.first_name")
-    second_name = ReadOnlyField(source="user.second_name")
-    fio = serializers.CharField()
-
-
-    #second_name = serializers.SerializerMethodField('second_name')
-    #
-    # def second_name(self, customuser):
-    #     return customuser.second_name
-
-    class Meta:
-        model = Teacher
-        fields = ("last_name", "first_name", "second_name") # "first_name", "second_name")
+    def to_representation(self, value):
+        print('!!')
+        print(value.user.last_name)
+        print(self)
+        return '%s %s %s' % (value.user.last_name, value.user.first_name, value.user.second_name)
 
 
 class LessonDetailSerializer(serializers.ModelSerializer):
@@ -60,3 +78,4 @@ class LessonListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("lesson_date", "subject")
+
