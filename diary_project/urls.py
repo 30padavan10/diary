@@ -20,9 +20,14 @@ from diary import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
+
     path("accounts/", include("django.contrib.auth.urls")),
     #path('accounts/signup/', classroom.SignUpView.as_view(), name='signup'),
     path('accounts/signup/student/', views.StudentSignUpView.as_view(), name='student_signup'),
     path('accounts/signup/teacher/', views.TeacherSignUpView.as_view(), name='teacher_signup'),
+    path('debug/', include('debug_toolbar.urls')),
     path('', include('diary.urls')),
+
 ]

@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
-from rest_framework import generics
+from rest_framework import generics, permissions
 
 from .models import Grade, Student, Lesson, School, SchoolClass, Teacher
 from .forms import GradeForm
@@ -15,7 +15,7 @@ class GradeListView(ListView):
 
     def get(self, request, *args, **kwargs):
         print('////')
-        print(request.user.__dict__)
+        print(request.user.username)
         return super().get(self, request, *args, **kwargs)
 
 
@@ -145,15 +145,18 @@ class StudentListView(generics.ListAPIView):
     queryset = Student.objects.all()
 
 
+
 class LessonListView(generics.ListAPIView):
     """Вывод списка уроков с помощью generics класса"""
     queryset = Lesson.objects.all()
     serializer_class = LessonListSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class LessonDetailView(generics.RetrieveAPIView):
     """Вывод данных об уроке с помощью generics класса"""
-    queryset = Lesson.objects.all()
+    #queryset = Lesson.objects.all()
+    queryset = Lesson.objects.select_related('subject', 'school', 'school_class', 'teacher')
     serializer_class = LessonDetailSerializer
 
 
