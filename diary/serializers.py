@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import ReadOnlyField
 
-from .models import Student, Lesson, CustomUser, Teacher
+from .models import Student, Lesson, CustomUser, Teacher, Grade
 
 
 class StudentListSerializer(serializers.ModelSerializer):
@@ -79,3 +79,9 @@ class LessonListSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ("lesson_date", "subject")
 
+
+class GradeListStudentSerializer(serializers.ModelSerializer):
+    """Вывод списка уроков"""
+    class Meta:
+        model = Grade
+        fields = ("lesson", "grade")

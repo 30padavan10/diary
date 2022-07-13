@@ -12,4 +12,5 @@ urlpatterns = [
     path('lesson/', views.LessonListView.as_view()),
     path('lesson/<int:pk>/', views.LessonDetailView.as_view()),
     path('teacher/<int:pk>/', views.TeacherDetailView.as_view()),
+    path('grades/', views.GradeListStudentView.as_view()),
 ]

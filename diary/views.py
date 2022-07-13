@@ -6,7 +6,8 @@ from rest_framework import generics, permissions
 
 from .models import Grade, Student, Lesson, School, SchoolClass, Teacher
 from .forms import GradeForm
-from .serializers import StudentListSerializer, LessonListSerializer, LessonDetailSerializer, TeacherDetailSerializer
+from .serializers import StudentListSerializer, LessonListSerializer, LessonDetailSerializer, TeacherDetailSerializer, \
+    GradeListStudentSerializer
 
 
 class GradeListView(ListView):
@@ -164,3 +165,18 @@ class TeacherDetailView(generics.RetrieveAPIView):
     """Вывод данных об уроке с помощью generics класса"""
     queryset = Teacher.objects.all()
     serializer_class = TeacherDetailSerializer
+
+
+class GradeListStudentView(generics.ListAPIView):
+    """Вывод списка оценок ученика"""
+    #queryset = Grade.objects.filter(student=)
+    serializer_class = GradeListStudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """В данном случае используем метод get_queryset вместо атрибута queryset т.к. нужно добраться до
+        self.request иначе можно было бы спокойно использовать queryset"""
+        print("!!!")
+        print(self.request.user)
+        grades = Grade.objects.filter(student__user=self.request.user)
+        return grades
