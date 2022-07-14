@@ -3,3 +3,5 @@ diary/migrations/__pycache__/
 .env
 db.sqlite3
 celerybeat-schedule
+static/rest_framework/
+static/silk/

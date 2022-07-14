@@ -33,3 +33,5 @@ urlpatterns = [
     path('', include('diary.urls')),
 
 ]
+
+urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]

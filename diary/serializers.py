@@ -73,6 +73,9 @@ class LessonDetailSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
+
+
 class LessonListSerializer(serializers.ModelSerializer):
     """Вывод списка уроков"""
     class Meta:
@@ -80,8 +83,56 @@ class LessonListSerializer(serializers.ModelSerializer):
         fields = ("lesson_date", "subject")
 
 
-class GradeListStudentSerializer(serializers.ModelSerializer):
-    """Вывод списка уроков"""
+# class GradeListStudentSerializer(serializers.ModelSerializer):
+#     """Вывод списка уроков(id) и оценки"""
+#     class Meta:
+#         model = Grade
+#         fields = ("lesson", "grade")
+
+
+class LessonDetailForGradeSerializer(serializers.ModelSerializer):
+    """Вывод данных об уроке"""
+    subject = serializers.SlugRelatedField(slug_field="description", read_only=True)
+    #lesson_date = serializers.DateTimeField(format="%d-%m-%Y %H:%M") # общий формат времени задается в settings
+    class Meta:
+        model = Lesson
+        #fields = ['subject', 'lesson_date']
+        fields =["subject"]
+
+
+# class GradeListStudentWithDescLesonSerializer(serializers.ModelSerializer):
+#     """Вывод списка уроков c оценками для конкретного студента, в таком варианте могут выводиться только стандартные
+#      поля, кастомное поле не
+#      объявить вывод такой
+#         {
+#             "lesson": {
+#                 "subject": "Русский язык"
+#             },
+#             "grade": 4
+#         },"""
+#
+#     lesson = LessonDetailForGradeSerializer(read_only=True)
+#
+#     class Meta:
+#         model = Grade
+#         fields = ("lesson", "grade")
+
+
+class AllGradesAutorizedStudentSerializer(serializers.ModelSerializer):
+    """Вывод списка уроков c оценками для конкретного студента, в таком варианте можно объявить кастомное поле, вообще
+     строим весь вывод самостоятельно как захотим
+     вывод такой
+     {
+        "grade": 4,
+        "lesson": "Русский язык"
+    },
+    """
+    def to_representation(self, instance):
+        return {
+            'grade': instance.grade,
+            'lesson': instance.lesson.subject.description,
+            'lesson_date': instance.lesson.lesson_date.strftime(format="%d-%m-%Y %H:%M")
+        }
+
     class Meta:
         model = Grade
-        fields = ("lesson", "grade")
