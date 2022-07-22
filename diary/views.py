@@ -4,6 +4,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from rest_framework import generics, permissions
 
+from .filters import SubjectFilter
 from .models import Grade, Student, Lesson, School, SchoolClass, Teacher
 from .forms import GradeForm
 from .serializers import (
@@ -180,9 +181,21 @@ class GradeListStudentView(generics.ListAPIView):
     serializer_class = AllGradesAutorizedStudentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # Добавление фильтрации
+    #filterset_fields = ['lesson__subject']  # для простых фильтров по id можно обойтись без создания класса фильтра,
+    # а фильтровать по полю или по связанному полю, если указать просто lesson, то будет фильтроваться по конкретному
+    # уроку здесь, а я через поле lesson добираюсь до предмета и фильтруется по id предмета, чтобы фильтровать по
+    # названию, нужен класс фильтра. В модели предметов сейчас только поле в котором предметы называются по русски,
+    # нужно доп поле чтобы было по английски и без пробелов.
+    # в url добавляется /?lesson__subject=2
+
+    filterset_class = SubjectFilter
+
     def get_queryset(self):
         """Независимо от того как реализован сериалайзер кверисет не меняется"""
         print("!!!")
-        print(self.request.user)
+        print(dir(self.request))
         grades = Grade.objects.filter(student__user=self.request.user).select_related('lesson', 'lesson__subject')
         return grades
+
+

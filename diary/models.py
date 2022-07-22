@@ -114,6 +114,7 @@ class SchoolClass(models.Model):
 
 class Subject(models.Model):
     """Предмет"""
+    eng_name = models.CharField(default='math', max_length=100, verbose_name='Англ сокращение предмета')
     description = models.CharField(max_length=100, verbose_name='Название предмета')
 
     def __str__(self):
