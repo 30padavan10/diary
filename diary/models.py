@@ -146,7 +146,7 @@ class Grade(models.Model):
     """Оценка"""
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     #student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='grades')
     grade = models.PositiveSmallIntegerField()
 
     def __str__(self):

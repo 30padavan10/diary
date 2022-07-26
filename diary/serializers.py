@@ -3,6 +3,8 @@ from rest_framework.fields import ReadOnlyField
 
 from .models import Student, Lesson, CustomUser, Teacher, Grade
 
+from django.db import models
+
 
 class StudentListSerializer(serializers.ModelSerializer):
     """Вывод списка студентов"""
@@ -136,3 +138,32 @@ class AllGradesAutorizedStudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Grade
+
+
+class StudentDetailSerializer(serializers.HyperlinkedModelSerializer):
+#class StudentDetailSerializer(serializers.ModelSerializer):
+    """Вывод ФИО"""
+    #user = serializers.SlugRelatedField(slug_field="first_name", read_only=True) # вместо поля user можно подставлять
+    # любое поле из связанной модели, но если мне нужны 3 поля для ФИО, то это не подойдет
+
+    last_name = ReadOnlyField(source="user.last_name")
+    first_name = ReadOnlyField(source="user.first_name")
+    second_name = ReadOnlyField(source="user.second_name")
+
+    # также есть другие варианты как отобразить related_name поле в документации Serializer relations
+    grades = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='grade')
+
+    middle_grade = serializers.FloatField()
+    count_grade = serializers.IntegerField()
+    #serializers.FloatField()
+    # student = Student.objects.filter(user=2).annotate(
+    #     middle_grade=models.Count("grades")  # models.Avg('grades__grade')
+    # )
+    # print('!!student!!')
+    # print(student[0].middle_grade)
+    class Meta:
+        model = Student
+        fields = ("last_name", "first_name", "second_name", "grades", "count_grade", "middle_grade")

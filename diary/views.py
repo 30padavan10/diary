@@ -1,10 +1,13 @@
+from django.db import models
 from django.shortcuts import render
 
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .filters import SubjectFilter
+from .filters import SubjectFilter, SubjectFilterFromStudent
 from .models import Grade, Student, Lesson, School, SchoolClass, Teacher
 from .forms import GradeForm
 from .serializers import (
@@ -12,8 +15,8 @@ from .serializers import (
     LessonListSerializer,
     LessonDetailSerializer,
     TeacherDetailSerializer,
-    #GradeListStudentSerializer,
-    AllGradesAutorizedStudentSerializer
+    # GradeListStudentSerializer,
+    AllGradesAutorizedStudentSerializer, StudentDetailSerializer
 )
 
 
@@ -192,10 +195,47 @@ class GradeListStudentView(generics.ListAPIView):
     filterset_class = SubjectFilter
 
     def get_queryset(self):
-        """Независимо от того как реализован сериалайзер кверисет не меняется"""
+        """Независимо от того как реализован сериалайзер кверисет не меняется
+        http://localhost:8000/grades/?subject=rus"""
         print("!!!")
         print(dir(self.request))
         grades = Grade.objects.filter(student__user=self.request.user).select_related('lesson', 'lesson__subject')
         return grades
+
+
+class StudentDetailView(generics.ListAPIView):
+    """Вывод данных ученика. Вывод дополнительных полей получилось сделать только используя serializer_class и
+     переопределенный метод get_queryset с помощью ListAPIView. RetrieveAPIView тут не подходит, т.к. он ждет в
+     адресной строке pk, а у нас пользователь не знает номер под которым зарегистрирован(хотя можно было вместо pk
+     поробовать передавать например поле с именем пользователя как слаг в мувис) Пытался переопределить метод get для
+      APIView он всегда ругался на то что в queryset нет поля которое я хочу добавить так решение и не нашел"""
+    #queryset = Student.objects.all()
+    #serializer_class = GradeListStudentSerializer
+    serializer_class = StudentDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    filterset_class = SubjectFilterFromStudent
+    # def get(self, request):
+    #     student = Student.objects.filter(user=self.request.user)
+    #     #     .annotate(
+    #     #     middle_grade=models.Count('grades')
+    #     # )
+    #     print("!!!")
+    #     print(request.user)
+    #     serializer = StudentDetailSerializer(student)
+    #     return Response(serializer.data)
+
+    def get_queryset(self):
+        """Независимо от того как реализован сериалайзер кверисет не меняется"""
+        # print("!!!")
+        # print(dir(self.request.user))
+        student = Student.objects.filter(user=self.request.user).annotate(
+            middle_grade=models.Avg('grades__grade')).annotate(
+            count_grade=models.Count('grades')
+        )
+        # student = Student.objects.annotate(
+        #     middle_grade=models.Count("grades")  # models.Avg('grades__grade')
+        # )
+        return student
 
 
