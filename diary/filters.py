@@ -25,7 +25,7 @@ class SubjectFilterFromStudent(filters.FilterSet):
     """Данный класс позволяет сделать фильтр по названию предмета. Модель в мета должна быть точно такой же как и в
      queryset. CharFilterInFilter тут не нужен т.к. у меня не М2М поле"""
     #subject = filters.CharFilter(field_name='grades__lesson__subject__eng_name')
-    subject = filters.CharFilter(field_name='grades')
+    subject = filters.CharFilter(field_name='grades__grade')
     #year = filters.RangeFilter()  # диапазон дат от мин до мах
 
     class Meta:

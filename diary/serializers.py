@@ -140,9 +140,12 @@ class AllGradesAutorizedStudentSerializer(serializers.ModelSerializer):
         model = Grade
 
 
-class StudentDetailSerializer(serializers.HyperlinkedModelSerializer):
-#class StudentDetailSerializer(serializers.ModelSerializer):
-    """Вывод ФИО"""
+
+# class StudentDetailSerializer(serializers.HyperlinkedModelSerializer):
+class StudentDetailSerializer(serializers.ModelSerializer):
+    """Данный сериалайзер выводит поля с данными о студенте. Поле grades это поле связанной дочерней модели, поэтому оно
+    позволяет вывести все связанный записи для данного студента, но как отфильтровать эти все записи чтобы выводилась
+    только их части (например фильтровать по предмету и т.д.) я так пока и не понял"""
     #user = serializers.SlugRelatedField(slug_field="first_name", read_only=True) # вместо поля user можно подставлять
     # любое поле из связанной модели, но если мне нужны 3 поля для ФИО, то это не подойдет
 
@@ -154,7 +157,8 @@ class StudentDetailSerializer(serializers.HyperlinkedModelSerializer):
     grades = serializers.SlugRelatedField(
         many=True,
         read_only=True,
-        slug_field='grade')
+        slug_field='grade'
+    )
 
     middle_grade = serializers.FloatField()
     count_grade = serializers.IntegerField()

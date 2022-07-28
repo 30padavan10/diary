@@ -208,7 +208,9 @@ class StudentDetailView(generics.ListAPIView):
      переопределенный метод get_queryset с помощью ListAPIView. RetrieveAPIView тут не подходит, т.к. он ждет в
      адресной строке pk, а у нас пользователь не знает номер под которым зарегистрирован(хотя можно было вместо pk
      поробовать передавать например поле с именем пользователя как слаг в мувис) Пытался переопределить метод get для
-      APIView он всегда ругался на то что в queryset нет поля которое я хочу добавить так решение и не нашел"""
+      APIView он всегда ругался на то что в queryset нет поля которое я хочу добавить так решение и не нашел.
+
+      Не нашел решения для фильтрации оценок через студента, подробнее в сериализаторе"""
     #queryset = Student.objects.all()
     #serializer_class = GradeListStudentSerializer
     serializer_class = StudentDetailSerializer
@@ -233,9 +235,6 @@ class StudentDetailView(generics.ListAPIView):
             middle_grade=models.Avg('grades__grade')).annotate(
             count_grade=models.Count('grades')
         )
-        # student = Student.objects.annotate(
-        #     middle_grade=models.Count("grades")  # models.Avg('grades__grade')
-        # )
         return student
 
 
