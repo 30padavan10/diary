@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.shortcuts import render
 
 from django.views.generic import ListView, CreateView, UpdateView
@@ -198,7 +199,7 @@ class GradeListStudentView(generics.ListAPIView):
         """Независимо от того как реализован сериалайзер кверисет не меняется
         http://localhost:8000/grades/?subject=rus"""
         print("!!!")
-        print(dir(self.request))
+        print(self.request.query_params.get('subject'))
         grades = Grade.objects.filter(student__user=self.request.user).select_related('lesson', 'lesson__subject')
         return grades
 
@@ -228,13 +229,23 @@ class StudentDetailView(generics.ListAPIView):
     #     return Response(serializer.data)
 
     def get_queryset(self):
-        """Независимо от того как реализован сериалайзер кверисет не меняется"""
-        # print("!!!")
-        # print(dir(self.request.user))
-        student = Student.objects.filter(user=self.request.user).annotate(
-            middle_grade=models.Avg('grades__grade')).annotate(
-            count_grade=models.Count('grades')
-        )
+        """Если в доп. поле в Count или Avg добавить filter=Q(grades__lesson__subject__eng_name='rus' и заходить без
+        параметров http://localhost:8000/private/ а в SubjectFilterFromStudent subject = filters.CharFilter(field_name='grades__grade')
+        то и среднее значение и количетво отображаются корректно, если добавить в запрос ?subject=rus то появляется
+        ошибка что какое-то поле grade ждет int, а получает rus. Если я в SubjectFilterFromStudent пишу
+        subject = filters.CharFilter(field_name='grades__lesson__subject__eng_name') то все отрабатывает, но тогда
+        становится некорректным поле middle_grade в вместо значения 2 выводится значение 4"""
+        if self.request.query_params.get('subject'):
+            subject_param = self.request.query_params.get('subject')
+            student = Student.objects.filter(user=self.request.user).annotate(
+                middle_grade=models.Avg('grades__grade', filter=Q(grades__lesson__subject__eng_name=subject_param))).annotate(
+                count_grade=models.Count('grades', filter=Q(grades__lesson__subject__eng_name=subject_param))
+            )
+        else:
+            student = Student.objects.filter(user=self.request.user).annotate(
+                middle_grade=models.Avg('grades__grade')).annotate(
+                count_grade=models.Count('grades')
+            )
         return student
 
 
